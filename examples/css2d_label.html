@@ -137,6 +137,12 @@
 				earthMassDiv.className = 'label';
 				earthMassDiv.textContent = '5.97237e24 kg';
 				earthMassDiv.style.marginTop = '-1em';
+				earthMassDiv.style.pointerEvents = 'auto'
+				earthMassDiv.style.cursor = 'pointer'
+				earthMassDiv.addEventListener('click', (e) => {
+					// e.stopPropagation()
+					console.log('click', e)
+				})
 				const earthMassLabel = new CSS2DObject( earthMassDiv );
 				earthMassLabel.position.set( 0, - 2 * EARTH_RADIUS, 0 );
 				earth.add( earthMassLabel );
@@ -158,7 +164,7 @@
 				const moonMassLabel = new CSS2DObject( moonMassDiv );
 				moonMassLabel.position.set( 0, - 2 * MOON_RADIUS, 0 );
 				moon.add( moonMassLabel );
-				moonMassLabel.layers.set( 1 );
+				// moonMassLabel.layers.set( 1 );
 
 				//
 
@@ -171,12 +177,16 @@
 				labelRenderer.setSize( window.innerWidth, window.innerHeight );
 				labelRenderer.domElement.style.position = 'absolute';
 				labelRenderer.domElement.style.top = '0px';
+				// labelRenderer.domElement.style.pointerEvents = 'none'
+				// labelRenderer.domElement.addEventListener('click', ({ currentTarget, target }) => {
+				// 	console.log('click', currentTarget, target )
+				// })
 				document.body.appendChild( labelRenderer.domElement );
 
 				const controls = new OrbitControls( camera, labelRenderer.domElement );
 				controls.minDistance = 5;
 				controls.maxDistance = 100;
-
+				controls.update()
 				//
 
 				window.addEventListener( 'resize', onWindowResize );

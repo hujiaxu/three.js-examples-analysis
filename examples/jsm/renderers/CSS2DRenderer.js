@@ -127,21 +127,14 @@ class CSS2DRenderer {
 
 					element.style.transform = 'translate(-50%,-50%) translate(' + ( _vector.x * _widthHalf + _widthHalf ) + 'px,' + ( - _vector.y * _heightHalf + _heightHalf ) + 'px)';
 
-					if ( element.parentNode !== domElement ) {
-
-						domElement.appendChild( element );
-
-					}
+					if ( element.parentNode !== domElement ) { domElement.appendChild( element ) }
 
 					object.onAfterRender( _this, scene, camera );
 
 				}
 
-				const objectData = {
-					distanceToCameraSquared: getDistanceToSquared( camera, object )
-				};
-
-				cache.objects.set( object, objectData );
+				const objectData = { distanceToCameraSquared: getDistanceToSquared( camera, object ) }
+				cache.objects.set( object, objectData )
 
 			}
 
@@ -180,16 +173,11 @@ class CSS2DRenderer {
 
 			const sorted = filterAndFlatten( scene ).sort( function ( a, b ) {
 
-				if ( a.renderOrder !== b.renderOrder ) {
-
-					return b.renderOrder - a.renderOrder;
-
-				}
-
-				const distanceA = cache.objects.get( a ).distanceToCameraSquared;
-				const distanceB = cache.objects.get( b ).distanceToCameraSquared;
-
-				return distanceA - distanceB;
+				if ( a.renderOrder !== b.renderOrder ) { return b.renderOrder - a.renderOrder }
+				
+				const distanceA = cache.objects.get( a ).distanceToCameraSquared
+				const distanceB = cache.objects.get( b ).distanceToCameraSquared
+				return distanceA - distanceB
 
 			} );
 
