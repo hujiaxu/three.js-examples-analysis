@@ -5,4 +5,4 @@ a repository of learning the Source Code and the examples of three.js(v0.143.0)
 输出有不足之处还请见谅，一直在学习进步中！！！
 
 
-## 笔记在 blog 文件夹里，一个例子一个文件与之对应
+## 所记笔记在blog文件夹中，examples示例与之一一对应！
