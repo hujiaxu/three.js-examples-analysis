@@ -148,7 +148,7 @@
 
 			}
 
-			//
+			// 下面三个方法 是对 GUI模块 做出相应变化 做出相应的处理逻辑
 
 			function showAtoms() {
 
@@ -348,7 +348,8 @@
 
 						let bond = document.createElement( 'div' );
 						bond.className = 'bond';
-						// 宽度没有给，只给了高度
+						// 宽度没有给，只给了高度，也没有给背景颜色，那么线条是怎么出来的
+						// 上面给了 className, css 样式以及写出来了
 						bond.style.height = bondLength + 'px';
  
 						let object = new CSS3DObject( bond );
