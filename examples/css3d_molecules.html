@@ -88,6 +88,8 @@
 
 			const loader = new PDBLoader();
 			const colorSpriteMap = {};
+
+			// 精灵图--以此为基础
 			const baseSprite = document.createElement( 'img' );
 
 			init();
@@ -112,7 +114,7 @@
 				//
 
 				controls = new TrackballControls( camera, renderer.domElement );
-				controls.rotateSpeed = 0.5;
+				controls.rotateSpeed = 1;
 
 				//
 
@@ -146,7 +148,7 @@
 
 			}
 
-			//
+			// 下面三个方法 是对 GUI模块 做出相应变化 做出相应的处理逻辑
 
 			function showAtoms() {
 
@@ -212,8 +214,7 @@
 
 			}
 
-			//
-
+			// 将 color 与 canvas像素颜色进行融合
 			function colorify( ctx, width, height, color ) {
 
 				const r = color.r, g = color.g, b = color.b;
@@ -233,6 +234,7 @@
 
 			}
 
+			// 将图片数据保存在 canvas 中
 			function imageToCanvas( image ) {
 
 				const width = image.width;
@@ -267,7 +269,8 @@
 				objects.length = 0;
 
 				loader.load( url, function ( pdb ) {
-
+					
+					// atom: 原子，bond: 纽带
 					const geometryAtoms = pdb.geometryAtoms;
 					const geometryBonds = pdb.geometryBonds;
 					const json = pdb.json;
@@ -300,8 +303,9 @@
 
 							colorify( context, canvas.width, canvas.height, color );
 
+							// 返回一个数据 URL，该 URL包含由类型参数指定的格式的图像(默认为png). 返回的图像分辨率为 96dpi
 							const dataUrl = canvas.toDataURL();
-
+							console.log(dataUrl, 'dataUrl')
 							colorSpriteMap[ element ] = dataUrl;
 
 						}
@@ -344,25 +348,48 @@
 
 						let bond = document.createElement( 'div' );
 						bond.className = 'bond';
+						// 宽度没有给，只给了高度，也没有给背景颜色，那么线条是怎么出来的
+						// 上面给了 className, css 样式以及写出来了
 						bond.style.height = bondLength + 'px';
-
+ 
 						let object = new CSS3DObject( bond );
 						object.position.copy( start );
+						// 将 object的position 插值为 start 和 end的中间位置
 						object.position.lerp( end, 0.5 );
 
+						// userData 为 用户自定义数据
 						object.userData.bondLengthShort = bondLength + 'px';
 						object.userData.bondLengthFull = ( bondLength + 55 ) + 'px';
-
+						console.log(object.userData, 'object.userData')
 						//
 
+						// 旋转角度以 y轴 为基准
 						const axis = tmpVec2.set( 0, 1, 0 ).cross( tmpVec1 );
+						// 求 旋转角度
+						// Math.acos(x)-- x: 一个数值；acos方法 以 -1 到 1 的一个数为参数，返回一个  0 到 pi(弧度)的数值。
 						const radians = Math.acos( tmpVec3.set( 0, 1, 0 ).dot( tmpVec4.copy( tmpVec1 ).normalize() ) );
 
+						// 得到的是 四元数--四维矩阵
+						/**
+						 * @function new THREE.MAtrix4().makeRotationAxis(axis, angle)
+						 * @param axis: 任意的 轴
+						 * @param angle: 旋转角度
+						 * @return Matrix4: 四元数矩阵-- 以 axis 为旋转轴，旋转了 angle 的矩阵
+						 * @tip1 参考文章：https://www.gamedev.net/reference/articles/article1199.asp
+						 * @tip2 下面两种方法都可以达到理想的旋转效果，第一种方法是 文章第二个公式，第二个方法是文章的 第一个公式
+						 * @tip3 1 与 2相比较的差别就是 1 先将 四元数矩阵保存到 objMatrix 给后面使用，2 是直接计算quaternion
+						*/
+
+						// 1. 先根据 axis 和 angle计算 四元数矩阵，然后再 通过 setFromRotationMatrix 得到 quaternion
 						const objMatrix = new THREE.Matrix4().makeRotationAxis( axis.normalize(), radians );
+						console.table(objMatrix, 'objMatrix')
 						object.matrix.copy( objMatrix );
 						object.quaternion.setFromRotationMatrix( object.matrix );
 
-						object.matrixAutoUpdate = false;
+						// 2，直接使用 axis 和 angle 通过 setFromAxisAngle 计算 quaternion
+						// object.quaternion.setFromAxisAngle(axis.normalize(), radians)
+
+						object.matrixAutoUpdate = false; 
 						object.updateMatrix();
 
 						root.add( object );
@@ -386,6 +413,8 @@
 						joint.updateMatrix();
 
 						object = new CSS3DObject( bond );
+						// Object3d 对 rotation, quaternion 使用 defineProperties 对他们做了相应的监听函数
+						// 他俩的值变化就会触发相关处理逻辑
 						object.rotation.y = Math.PI / 2;
 
 						object.matrixAutoUpdate = false;
