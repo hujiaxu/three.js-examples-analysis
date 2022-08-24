@@ -5799,17 +5799,11 @@
 			const quaternion = new Quaternion();
 			const scale = new Vector3(1, 1, 1);
 
-			function onRotationChange() {
-				quaternion.setFromEuler(rotation, false);
-			}
+			function onRotationChange() { quaternion.setFromEuler(rotation, false) }
+			function onQuaternionChange() { rotation.setFromQuaternion(quaternion, undefined, false) }
 
-			function onQuaternionChange() {
-				rotation.setFromQuaternion(quaternion, undefined, false);
-			}
-
-			rotation._onChange(onRotationChange);
-
-			quaternion._onChange(onQuaternionChange);
+			rotation._onChange(onRotationChange)
+			quaternion._onChange(onQuaternionChange)
 
 			Object.defineProperties(this, {
 				position: {
@@ -9741,11 +9735,14 @@
 
 	}
 
-	var alphamap_fragment = "#ifdef USE_ALPHAMAP\n\tdiffuseColor.a *= texture2D( alphaMap, vUv ).g;\n#endif";
+	var alphamap_fragment =
+    "#ifdef USE_ALPHAMAP\n\tdiffuseColor.a *= texture2D( alphaMap, vUv ).g;\n#endif";
 
-	var alphamap_pars_fragment = "#ifdef USE_ALPHAMAP\n\tuniform sampler2D alphaMap;\n#endif";
+	var alphamap_pars_fragment =
+    "#ifdef USE_ALPHAMAP\n\tuniform sampler2D alphaMap;\n#endif";
 
-	var alphatest_fragment = "#ifdef USE_ALPHATEST\n\tif ( diffuseColor.a < alphaTest ) discard;\n#endif";
+  var alphatest_fragment =
+    "#ifdef USE_ALPHATEST\n\tif ( diffuseColor.a < alphaTest ) discard;\n#endif";
 
 	var alphatest_pars_fragment = "#ifdef USE_ALPHATEST\n\tuniform float alphaTest;\n#endif";
 
